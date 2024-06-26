@@ -1,0 +1,34 @@
+networks:
+  vhf:
+    external: true
+
+services:
+  atcbot:
+    container_name: twrbot
+    restart: unless-stopped
+    networks:
+      - vhf
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+     - TOKEN=$TOKEN
+     - PREFIX=$PREFIX
+     - CHANNEL_ID=$CHANNEL_ID
+     - UDP_PORT=$UDP_PORT
+     - ADMIN_ROLE=$ADMIN_ROLE
+
+  atcbot2:
+    container_name: appbot
+    restart: unless-stopped
+    networks:
+      - vhf
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+    - TOKEN=$TOKEN2
+    - PREFIX=$PREFIX2
+    - CHANNEL_ID=$CHANNEL_ID2
+    - UDP_PORT=$UDP_PORT
+    - ADMIN_ROLE=$ADMIN_ROLE
