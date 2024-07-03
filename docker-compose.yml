@@ -1,0 +1,7 @@
+services:
+  atcbot:
+    container_name: atcbot
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./Dockerfile
