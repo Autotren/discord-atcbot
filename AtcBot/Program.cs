@@ -10,18 +10,17 @@ public class Program
 {
     private static readonly DiscordSocketClient _client = new();
     private static ulong _channelId;
+    private static int _udpPort;
     public static async Task Main()
     {
-        string? channelId = Environment.GetEnvironmentVariable("channelId");
-        if (string.IsNullOrEmpty(channelId))
-            throw new Exception("No channelID set");
-        _channelId = ulong.Parse(channelId);
+        _udpPort = int.Parse(Environment.GetEnvironmentVariable("UDP_PORT") ?? "2000");
+        _channelId = ulong.Parse(Environment.GetEnvironmentVariable("CHANNEL_ID") ?? throw new Exception("No channelID set"));
         // _client = new DiscordSocketClient();
         _client.Log += Log;
         _client.Ready += Ready;
         _client.UserVoiceStateUpdated += UserVoiceStateUpdated;
 
-        await _client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("discordToken"));
+        await _client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("DISCORD_TOKEN"));
         await _client.StartAsync();
 
         // Block the program until it is closed.
@@ -118,8 +117,8 @@ public class Program
 
     private static async Task UdpPipeAsync(Stream output)
     {
-        using UdpClient udpClient = new(2003);
-        Console.WriteLine("Starting UDP client...");
+        using UdpClient udpClient = new(_udpPort);
+        Console.WriteLine($"Starting UDP client on port {_udpPort}...");
         while (true) // Not sure of a better way, but seems to be disposed just fine
         {
             UdpReceiveResult udpResult = await udpClient.ReceiveAsync();
